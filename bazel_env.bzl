@@ -512,6 +512,9 @@ def _bazel_env_rule_impl(ctx):
         outputs = [implicit_out],
         inputs = depset(direct_inputs, transitive = transitive_inputs),
         tools = tools,
+        # The tools are user-provided targets, not tools of a toolchain this rule declares. Without
+        # this, --incompatible_auto_exec_groups can't tell which exec group the action belongs to.
+        toolchain = None,
         # Use the bash builtin `:` (true) with output redirection instead of
         # `touch`, which is an external command that requires PATH. Unpatched
         # Bazel binaries (e.g. via bazelisk on NixOS) run shell actions with a
